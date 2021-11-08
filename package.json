@@ -1,0 +1,31 @@
+{
+  "name": "midifun",
+  "version": "0.0.1",
+  "description": "For noodling around",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loktar00/midifun.git"
+  },
+  "keywords": [
+    "midi",
+    "generate",
+    "noodle"
+  ],
+  "author": "loktar00",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loktar00/midifun/issues"
+  },
+  "homepage": "https://github.com/loktar00/midifun#readme",
+  "dependencies": {
+    "typescript": "^4.4.4"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.2",
+    "@types/webmidi": "^2.0.6"
+  }
+}

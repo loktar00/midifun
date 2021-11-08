@@ -1,0 +1,58 @@
+<html>
+
+    <button>Stop</button>
+    <script>
+        let midiAccess;
+        let portID;
+        let channel = 12;
+        let stop = false;
+
+        navigator.requestMIDIAccess().then((access) => {
+        const midi = Array.from(access.outputs);
+        midiAccess = access;
+        portID = "output-1";
+        });
+
+        function sendNote(note, vel, state) {
+        const output = midiAccess.outputs.get(portID);
+        const on = parseInt("90", 16) + channel;
+        const off = parseInt("80", 16) + channel;
+        const states = { on, off };
+
+        output.send([states[state], note, vel]); // hexadecimal
+        }
+
+        function* notes() {
+        while (true && !stop) {
+            let random = ~~(Math.random() * (90 - 50 + 1) + 50);
+            yield random;
+        }
+        }
+
+        const noteGen = notes();
+
+        function playNotes(notes) {
+        setTimeout(() => {
+            const note = notes.next().value;
+
+            console.log(note);
+
+            if (!note) {
+                return;
+            }
+
+            sendNote(note, 100, "on");
+            setTimeout(() => {
+                sendNote(note, 100, "off");
+                playNotes(noteGen);
+            }, Math.random() * 1000);
+
+        }, Math.random() * 500);
+        }
+
+        playNotes(noteGen);
+
+        const button = document.querySelector('button');
+        button.addEventListener('click', () => {stop = true;})
+    </script>
+</html>
