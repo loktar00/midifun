@@ -1,4 +1,5 @@
 import { MidiDevice } from './MidiDevice';
+
 let channel = 12;
 let midiDevices:Array<MidiDevice> = [];
 
