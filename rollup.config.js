@@ -22,7 +22,7 @@ const config = {
     resolve(),
     typescript()
   ],
-  watch: { include: 'src/*' },
+  watch: { include: ['src/*', 'public/*'] },
   preserveEntrySignatures: false,
 };
 

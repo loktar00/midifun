@@ -1,43 +1,62 @@
 import { MidiDevice } from './MidiDevice';
 
-let channel = 12;
-let midiDevices:Array<MidiDevice> = [];
+import {LitElement, html} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 
-navigator.requestMIDIAccess().then((access) => {
-    for (let output of access.outputs.values()) {
-        midiDevices.push(new MidiDevice(output, channel));
+@customElement('lets-noodle')
+class LetsNoodle extends LitElement {
+
+    private channel = 12;
+    private midiDevices:Array<MidiDevice> = [];
+    private notes;
+
+    constructor() {
+        super();
+        this.notes = this.noteGen();
+        navigator.requestMIDIAccess().then((access) => {
+            for (let output of access.outputs.values()) {
+                this.midiDevices.push(new MidiDevice(output, this.channel));
+            }
+        });
+
+        this.playNotes(this.notes);
     }
-});
 
-function* notes() {
-    let total = 0;
-    while (total < 10) {
-        total++;
-        let random = ~~(Math.random() * (90 - 50 + 1) + 50);
-        yield random;
-    }
-}
 
-const noteGen = notes();
-
-function playNotes(notes:Iterator<number>) {
-    setTimeout(() => {
-        const note = notes.next().value;
-
-        console.log(note);
-
-        if (!note) {
-            return;
+    * noteGen() {
+        let total = 0;
+        while (total < 10) {
+            total++;
+            let random = ~~(Math.random() * (90 - 50 + 1) + 50);
+            yield random;
         }
+    }
 
-        midiDevices[0].playNote(note, 100, "on");
-
+    playNotes(notes:Iterator<number>) {
         setTimeout(() => {
-            midiDevices[0].playNote(note, 100, "off");
-            playNotes(noteGen);
-        }, Math.random() * 1000);
+            const note = notes.next().value;
 
-    }, Math.random() * 500);
+            console.log(note);
+
+            if (!note) {
+                return;
+            }
+
+            this.midiDevices[0].playNote(note, 100, "on");
+
+            setTimeout(() => {
+                this.midiDevices[0].playNote(note, 100, "off");
+                this.playNotes(this.notes);
+            }, Math.random() * 1000);
+
+        }, Math.random() * 500);
+    }
+
+    render() {
+        return html`
+            <div>
+                Noodle
+            </div>
+        `;
+    }
 }
-
-playNotes(noteGen);
